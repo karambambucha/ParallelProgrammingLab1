@@ -116,25 +116,38 @@ double MethodNewtonCotes(double a, double b, int n, int power, int threadsNum)
     long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
         elapsed).count();
     cout << "Вычисленный интеграл = " << fixed << setprecision(10) << result << ", " << milliseconds << "мс\n\n";
-    return result;
+    delete[] threads;
+    delete[] tasks;
+    return milliseconds;
 }
 
 #if 1
 int main()
 {
     setlocale(LC_ALL, "");
-    double a = 1;
-    double b = 100;
-    int n = 5000000;
-    int power = 3;
-    double results[8];
-    for (size_t i = 0; i < 8; i++)
+    double mainResults[8] = {};
+    const int testCount = 15;
+    for (size_t i = 0; i < testCount; i++)
     {
-        results[i] = MethodNewtonCotes(a, b, n, power, i + 1);
+        double a = 1;
+        double b = 100;
+        int n = 5000000;
+        int power = 3;
+        double results[8];
+        for (size_t i = 0; i < 8; i++)
+        {
+            results[i] = MethodNewtonCotes(a, b, n, power, i + 1);
+        }
+        for (size_t i = 0; i < 8; i++)
+        {
+            cout << i + 1 << ": " << results[i] << endl;
+            mainResults[i] += results[i];
+        }
     }
+    cout << "Среднее время выполнения метода из " << testCount << " эксперементов:" << endl;
     for (size_t i = 0; i < 8; i++)
     {
-        cout << i + 1 << ": " << results[i] << endl;
+        cout << i + 1 << ": " << mainResults[i]/testCount << endl;
     }
     return 0;
 }
